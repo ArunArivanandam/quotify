@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"log"
 	"net/http"
 
@@ -27,6 +28,7 @@ func main() {
 	apiRouter := chi.NewRouter()
 	apiRouter.Get("/healthz", handlerReadiness)
 	apiRouter.Get("/reset", apiCfg.handlerReset)
+	apiRouter.Post("/validate_quote", handlerQuotesValidate)
 	router.Mount("/api", apiRouter)
 
 	adminRouter := chi.NewRouter()
@@ -43,4 +45,59 @@ func main() {
 	log.Printf("Serving files from %s on port: %s\n", filepathRoot, port)
 	log.Fatal(srv.ListenAndServe())
 
+}
+
+func handlerQuotesValidate(w http.ResponseWriter, r *http.Request) {
+	type parameters struct {
+		Quote  string `json:"quote"`
+		Author string `json:"author"`
+	}
+
+	decoder := json.NewDecoder(r.Body)
+	params := parameters{}
+	err := decoder.Decode(&params)
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, "Couldn't decode parameters")
+		return
+	}
+
+	const maxQuoteLength = 300
+	if len(params.Quote) > maxQuoteLength {
+		respondWithError(w, http.StatusBadRequest, "Quote is too long")
+		return
+	}
+
+	if params.Author == "" {
+		params.Author = "unknown"
+	}
+
+	respondWithJSON(w, http.StatusOK, parameters{
+		Quote:  params.Quote,
+		Author: params.Author,
+	})
+
+}
+
+func respondWithError(w http.ResponseWriter, code int, msg string) {
+	if code > 499 {
+		log.Printf("Responding with 5xx error: %s", msg)
+	}
+	type errorResponse struct {
+		Error string `json:"error"`
+	}
+	respondWithJSON(w, code, errorResponse{
+		Error: msg,
+	})
+}
+
+func respondWithJSON(w http.ResponseWriter, code int, payload interface{}) {
+	w.Header().Set("Content-Type", "application/json")
+	dat, err := json.Marshal(payload)
+	if err != nil {
+		log.Printf("Error marshalling JSON: %s", err)
+		w.WriteHeader(500)
+		return
+	}
+	w.WriteHeader(code)
+	w.Write(dat)
 }
