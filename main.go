@@ -19,15 +19,18 @@ func main() {
 		fileserverHits: 0,
 	}
 
-	r := chi.NewRouter()
+	router := chi.NewRouter()
 	fsHandler := apiCfg.middlewareMetricsInc(http.StripPrefix("/app", http.FileServer(http.Dir(filepathRoot))))
-	r.Handle("/app", fsHandler)
-	r.Handle("/app/", fsHandler)
-	r.Get("/healthz", handlerReadiness)
-	r.Get("/metrics", apiCfg.handlerMetrics)
-	r.Get("/reset", apiCfg.handlerReset)
+	router.Handle("/app", fsHandler)
+	router.Handle("/app/", fsHandler)
 
-	CorsMux := middlewareCors(r)
+	apiRouter := chi.NewRouter()
+	apiRouter.Get("/healthz", handlerReadiness)
+	apiRouter.Get("/metrics", apiCfg.handlerMetrics)
+	apiRouter.Get("/reset", apiCfg.handlerReset)
+	router.Mount("/api", apiRouter)
+
+	CorsMux := middlewareCors(router)
 
 	srv := &http.Server{
 		Addr:    ":" + port,
