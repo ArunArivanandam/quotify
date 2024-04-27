@@ -17,3 +17,12 @@ go build -o quoify && ./quoify
 ```
 - Open Localhost: 127.0.0.1:8080
 
+## 📖 Usage
+
+Available search methods:
+
+* `Auhtor` - The author of quote
+* `Tag` - The grouped quotes
+* `Random` - Random quotes
+
+* `-f` - The file extensions to include (default .txt, .md)
