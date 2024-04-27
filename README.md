@@ -8,5 +8,12 @@ Quotify is a quote management app that makes easy to store, search, sanitize you
 - Profaniy checker
 - Anonymous author
 
-
+## 🚀 Quick Start
+### Install 
+- Clone the repo
+- Run the project
+```bash
+go build -o quoify && ./quoify
+```
+- Open Localhost: 127.0.0.1:8080
 
