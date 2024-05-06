@@ -6,9 +6,7 @@ favorite quotes..
 
 ## Goals
 - Ease of storing favorite quotes
-- Search with keywors and tags
 - Profaniy checker
-- Anonymous author
 
 ## 🚀 Quick Start
 ### Install 
@@ -19,33 +17,25 @@ go build -o quoify && ./quoify
 ```
 - Open Localhost: 127.0.0.1:8080
 
-## 📖 Usage
-
-Available search methods:
-
-* `Auhtor` - The author of quote
-* `Tag` - The grouped quotes
-* `Random` - Random quotes
-
 ## 🤝 Contributing
 
 ### Clone the repo
 
 ```bash
-git clone https://github.com/xyz/zipzod@latest
-cd zipzod
+git clone https://github.com/ArunArivanandam/quotify.git
+cd quotify
 ```
 
 ### Build the project
 
 ```bash
-go build
+go build -o quoify
 ```
 
 ### Run the project
 
 ```bash
-./zipzod -i ./input -o ./output.zip
+./quoify
 ```
 
 ### Run the tests
