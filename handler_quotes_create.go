@@ -63,7 +63,6 @@ func validateQuote(body string) (string, error) {
 		"fuck":   {},
 		"shit":   {},
 		"badass": {},
-		"dick":   {},
 		"sex":    {},
 	}
 
